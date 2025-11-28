@@ -1,16 +1,23 @@
-import React from 'react';
+// src/components/NavBar.jsx
+import React, { useState } from 'react';
 
-export default function Navbar(){
+export default function NavBar() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <nav>
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li>
-          <a href="#">Services ▾</a>
-          <ul>
-            <li><a href="#design">Design</a></li>
-            <li><a href="#branding">Branding</a></li>
-            <li><a href="#printing">Printing</a></li>
+    <nav className="navbar">
+      <ul className="nav-list">
+        <li><a href="#home">Home</a></li>
+        <li
+          className="nav-has-dropdown"
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+        >
+          <a href="#services">Services ▾</a>
+          <ul className={`dropdown ${open ? 'open' : ''}`}>
+            <li><a href="#services">Design</a></li>
+            <li><a href="#services">Branding</a></li>
+            <li><a href="#services">Printing</a></li>
           </ul>
         </li>
         <li><a href="#contact">Contact</a></li>

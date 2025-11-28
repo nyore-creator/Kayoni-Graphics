@@ -1,58 +1,101 @@
+// src/components/ContactForm.jsx
 import React, { useState } from 'react';
 
-export default function ContactForm(){
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+
+export default function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState({ type: '', msg: '' });
+  const [loading, setLoading] = useState(false);
 
-  const API = import.meta.env.VITE_API_URL || '';
+  const update = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  async function handleSubmit(e){
+  const submit = async (e) => {
     e.preventDefault();
-    if (!form.name.trim() || !form.email.trim() || !form.message.trim()){
-      alert('⚠️ Please fill in all fields before submitting.');
+    setStatus({ type: '', msg: '' });
+
+    if (!form.name || !form.email || !form.message) {
+      setStatus({ type: 'error', msg: 'Please fill all fields.' });
       return;
     }
 
-    setStatus('sending');
     try {
-      const res = await fetch(`${API}/api/contact`, {
+      setLoading(true);
+
+      const res = await fetch(`${API_BASE}/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
+        body: JSON.stringify(form),
       });
-      const json = await res.json();
-      if (res.ok && json.success !== false) {
-        setStatus('sent');
-        alert(`✅ Thank you, ${form.name}! Your message has been sent.`);
-        setForm({ name: '', email: '', message: '' });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setStatus({
+          type: 'error',
+          msg: data.msg || 'Failed to send message.',
+        });
       } else {
-        setStatus('error');
-        alert('❌ There was a problem sending your message.');
+        setStatus({
+          type: 'success',
+          msg: 'Message sent successfully!',
+        });
+        setForm({ name: '', email: '', message: '' });
       }
     } catch (err) {
-      console.error('Contact error:', err);
-      setStatus('error');
-      alert('❌ Network error. Try again later.');
+      setStatus({
+        type: 'error',
+        msg: 'Network error. Please try again.',
+      });
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <section id="contact">
+    <section id="contact" className="section">
       <h2>Contact Us</h2>
-      <form id="contactForm" onSubmit={handleSubmit}>
-        <label htmlFor="name">Your Name:</label><br />
-        <input id="name" name="yourname" required value={form.name} onChange={e => setForm({...form, name: e.target.value})} /><br />
+      <form className="form" onSubmit={submit}>
+        <label htmlFor="name">Your Name</label>
+        <input
+          id="name"
+          name="name"
+          value={form.name}
+          onChange={update}
+          required
+        />
 
-        <label htmlFor="email">Your Email:</label><br />
-        <input id="email" type="email" name="youremail" required value={form.email} onChange={e => setForm({...form, email: e.target.value})} /><br />
+        <label htmlFor="email">Your Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={update}
+          required
+        />
 
-        <label htmlFor="message">Your Message:</label><br />
-        <textarea id="message" name="yourmessage" rows="6" required value={form.message} onChange={e => setForm({...form, message: e.target.value})} /><br />
+        <label htmlFor="message">Your Message</label>
+        <textarea
+          id="message"
+          name="message"
+          rows="6"
+          value={form.message}
+          onChange={update}
+          required
+        />
 
-        <input type="submit" value={status === 'sending' ? 'Sending…' : 'Send'} />
+        <button className="btn btn-primary" type="submit" disabled={loading}>
+          {loading ? 'Sending…' : 'Send'}
+        </button>
+
+        {status.msg && (
+          <p className={`status ${status.type === 'success' ? 'ok' : 'err'}`}>
+            {status.msg}
+          </p>
+        )}
       </form>
-      {status === 'sent' && <p style={{color:'green'}}>Message sent — thank you!</p>}
-      {status === 'error' && <p style={{color:'red'}}>There was an error. Try again later.</p>}
     </section>
   );
 }

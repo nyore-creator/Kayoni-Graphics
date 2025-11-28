@@ -1,60 +1,52 @@
-import React from "react";
-import "../style.css";
+// src/components/Services.jsx
+import React from 'react';
 
-const Services = () => {
-  const services = [
-    {
-      icon: "🎨",
-      title: "Graphic Design",
-      description:
-        "We design posters, banners, logos, certificates and all branding materials.",
-    },
-    {
-      icon: "🖨️",
-      title: "Printing Services",
-      description:
-        "High-quality printing for brochures, flyers, business cards, banners, stickers and more.",
-    },
-    {
-      icon: "🪪",
-      title: "Branding",
-      description:
-        "T-shirts, Jerseys, Caps, Reflectors, Overalls, hoodies, notebooks, diaries, and more.",
-    },
-    {
-      icon: "💻",
-      title: "Cyber Services",
-      description:
-        "Online applications, KRA services, NSSF, NHIF, HELB and general online work.",
-    },
-    {
-      icon: "📄",
-      title: "Typing & Printing",
-      description:
-        "Professional document typing, editing and high-quality printing.",
-    },
-    {
-      icon: "📑",
-      title: "Lamination & Binding",
-      description:
-        "Protect your documents with hot lamination and secure binding.",
-    },
-  ];
-
+export default function Services() {
   return (
-    <section id="services" className="services-section">
-      <h2 className="section-title">Our Services</h2>
-      <div className="service-list">
-        {services.map((service, index) => (
-          <div className="service-card" key={index}>
-            <span className="service-icon">{service.icon}</span>
-            <h3>{service.title}</h3>
-            <p>{service.description}</p>
-          </div>
-        ))}
+    <section id="services" className="section">
+      <h2>Services Offered</h2>
+      <div className="grid">
+        <div className="card">
+          <div className="service-icon">🎨</div>
+          <h3>Graphic Design</h3>
+          <p>Creative, professional designs tailored to your brand identity.</p>
+        </div>
+
+        <div className="card">
+          <div className="service-icon">🏷️</div>
+          <h3>Branding</h3>
+          <ul className="list">
+            <li>Jerseys</li>
+            <li>T-shirts</li>
+            <li>Reflectors</li>
+            <li>Caps</li>
+            <li>Mugs</li>
+            <li>Pens</li>
+          </ul>
+        </div>
+
+        <div className="card">
+          <div className="service-icon">🖨️</div>
+          <h3>Design & Printing</h3>
+          <ul className="list">
+            <li>Banners</li>
+            <li>Posters</li>
+            <li>Business Cards</li>
+            <li>Flyers</li>
+            <li>Eulogies</li>
+          </ul>
+        </div>
+
+        <div className="card">
+          <div className="service-icon">📚</div>
+          <h3>Printing, Perforating & Binding</h3>
+          <ul className="list">
+            <li>Receipt Books</li>
+            <li>Delivery Notebooks</li>
+            <li>Invoice Books</li>
+          </ul>
+        </div>
       </div>
     </section>
   );
-};
-
-export default Services;
+}

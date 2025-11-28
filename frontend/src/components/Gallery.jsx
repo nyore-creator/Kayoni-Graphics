@@ -1,54 +1,106 @@
-import React, { useState } from "react";
+// src/components/Gallery.jsx
+import React, { useEffect, useRef, useState } from 'react';
 
-// Import all images from Assets/IMAGES
-import img1 from "../Assets/IMAGES/logo 1.jpg";
-import img2 from "../Assets/IMAGES/logo 2.jpg";
-import img3 from "../Assets/IMAGES/logo 3.jpg";
-import img4 from "../Assets/IMAGES/logo 4.jpg";
-import img5 from "../Assets/IMAGES/logo 5.jpg";
-import img6 from "../Assets/IMAGES/AMT.jpg";
-import img7 from "../Assets/IMAGES/DEVCON.jpg";
-import img8 from "../Assets/IMAGES/B.CARDS.jpg";
-import img9 from "../Assets/IMAGES/BANNER.jpg";
-import img10 from "../Assets/IMAGES/STICKER1.jpg";
-import img11 from "../Assets/IMAGES/TAGS.jpg";
-import img12 from "../Assets/IMAGES/REFLECTOR1.jpg";
-import img13 from "../Assets/IMAGES/REFLECTOR2.jpg";
-import img14 from "../Assets/IMAGES/HOODIE.jpg";
+// Import your images from /src/assets
+import img1 from '../assets/images/logo 1.jpg';
+import img2 from '../assets/images/logo 2.jpg';
+import img3 from '../assets/images/logo 3.jpg';
+import img4 from '../assets/images/logo 4.jpg';
+import img5 from '../assets/images/logo 5.jpg';
+import amt from '../assets/images/AMT.jpg';
+import devcon from '../assets/images/DEVCON.jpg';
+import bcards from '../assets/images/B.CARDS.jpg';
+import banner from '../assets/images/BANNER.jpg';
+import sticker from '../assets/images/STICKER1.jpg';
+import tags from '../assets/images/TAGS.jpg';
+import refl1 from '../assets/images/REFLECTOR1.jpg';
+import refl2 from '../assets/images/REFLECTOR2.jpg';
+import hoodie from '../assets/images/HOODIE.jpg';
 
-const IMAGES = [
-  img1, img2, img3, img4, img5,
-  img6, img7, img8, img9,
-  img10, img11, img12, img13, img14
+const images = [
+  { src: img1, alt: 'Graphic Design Sample 1' },
+  { src: img2, alt: 'Graphic Design Sample 2' },
+  { src: img3, alt: 'Graphic Design Sample 3' },
+  { src: img4, alt: 'Graphic Design Sample 4' },
+  { src: img5, alt: 'Graphic Design Sample 5' },
+  { src: amt, alt: 'T-Shirt branding AMT' },
+  { src: devcon, alt: 'T-Shirt branding DEVCON' },
+  { src: bcards, alt: 'Business cards' },
+  { src: banner, alt: 'Banner printing' },
+  { src: sticker, alt: 'Sticker design' },
+  { src: tags, alt: 'Tags' },
+  { src: refl1, alt: 'Branded Reflectors 1' },
+  { src: refl2, alt: 'Branded Reflectors 2' },
+  { src: hoodie, alt: 'Branded Hoodie' },
 ];
 
 export default function Gallery() {
-  const [current, setCurrent] = useState(0);
+  const [index, setIndex] = useState(0);
+  const trackRef = useRef(null);
+  const touch = useRef({ startX: 0, endX: 0 });
 
-  const prev = () =>
-    setCurrent((i) => (i - 1 + IMAGES.length) % IMAGES.length);
+  const prev = () => setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
+  const next = () => setIndex((i) => (i === images.length - 1 ? 0 : i + 1));
 
-  const next = () =>
-    setCurrent((i) => (i + 1) % IMAGES.length);
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  const onTouchStart = (e) => {
+    touch.current.startX = e.touches[0].clientX;
+  };
+  const onTouchMove = (e) => {
+    touch.current.endX = e.touches[0].clientX;
+  };
+  const onTouchEnd = () => {
+    const delta = touch.current.endX - touch.current.startX;
+    if (delta > 50) prev();
+    else if (delta < -50) next();
+    touch.current = { startX: 0, endX: 0 };
+  };
 
   return (
-    <section className="gallery-section">
-
+    <section className="section" id="gallery">
       <h2>Our Work (Images)</h2>
-
-      <div className="gallery">
-        <img
-          src={IMAGES[current]}
-          alt={`Gallery ${current + 1}`}
-          className="gallery-image"
-        />
+      <div
+        className="carousel"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        <div
+          ref={trackRef}
+          className="carousel-track"
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
+          {images.map((img, i) => (
+            <div className="carousel-slide" key={i}>
+              <img src={img.src} alt={img.alt} loading="lazy" />
+            </div>
+          ))}
+        </div>
+        <button className="btn btn-ghost prev" onClick={prev} aria-label="Previous">
+          ⟨ Prev
+        </button>
+        <button className="btn btn-ghost next" onClick={next} aria-label="Next">
+          Next ⟩
+        </button>
       </div>
-
-      <div className="gallery-controls">
-        <button onClick={prev}>⟨ Prev</button>
-        <button onClick={next}>Next ⟩</button>
+      <div className="carousel-dots">
+        {images.map((_, i) => (
+          <button
+            key={i}
+            className={`dot ${i === index ? 'active' : ''}`}
+            onClick={() => setIndex(i)}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
       </div>
-
     </section>
   );
 }

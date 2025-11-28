@@ -1,7 +1,9 @@
+// backend/routes/contact.js
 const express = require('express');
 const router = express.Router();
 const Contact = require('../models/Contact');
 
+// POST /api/contact
 router.post('/', async (req, res) => {
   try {
     const { name, email, message } = req.body;
@@ -16,6 +18,7 @@ router.post('/', async (req, res) => {
   }
 });
 
+// GET /api/contact
 router.get('/', async (req, res) => {
   try {
     const messages = await Contact.find().sort({ createdAt: -1 }).limit(100);

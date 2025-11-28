@@ -1,22 +1,41 @@
+// src/components/FAQ.jsx
 import React, { useState } from 'react';
 
-function Item({question, answer}){
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="faq-item" onClick={() => setOpen(o => !o)}>
-      <strong>{question}</strong>
-      {open && <p className="faq-answer">{answer}</p>}
-    </div>
-  );
-}
+const items = [
+  {
+    q: 'What services do you offer?',
+    a: 'We offer graphic design, branding, printing, and publishing services.'
+  },
+  {
+    q: 'Where are you located?',
+    a: 'Homa Bay, Legacy Plaza – 2nd Floor, Door No. 25.'
+  },
+  {
+    q: 'Do you work on weekends?',
+    a: 'We are closed on Saturdays but open on Sundays from 8am - 5pm.'
+  }
+];
 
-export default function FAQ(){
+export default function FAQ() {
+  const [open, setOpen] = useState(null);
   return (
-    <section>
+    <section className="section">
       <h2>Frequently Asked Questions</h2>
-      <Item question="What services do you offer?" answer="We offer graphic design, branding, printing, and publishing services." />
-      <Item question="Where are you located?" answer="We are located in Homa Bay, Legacy Plaza – 2nd Floor, Door No. 25." />
-      <Item question="Do you work on weekends?" answer="We are closed on Saturdays but open on Sundays from 8am - 5pm." />
+      <div className="faq">
+        {items.map((it, i) => (
+          <div className="faq-item" key={i}>
+            <button
+              className="faq-question"
+              onClick={() => setOpen(open === i ? null : i)}
+              aria-expanded={open === i}
+            >
+              {it.q}
+              <span className="chevron">{open === i ? '▲' : '▼'}</span>
+            </button>
+            {open === i && <p className="faq-answer">{it.a}</p>}
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
