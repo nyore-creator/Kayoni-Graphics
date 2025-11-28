@@ -2,20 +2,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 // Import your images from /src/assets
-import img1 from '../assets/images/logo 1.jpg';
-import img2 from '../assets/images/logo 2.jpg';
-import img3 from '../assets/images/logo 3.jpg';
-import img4 from '../assets/images/logo 4.jpg';
-import img5 from '../assets/images/logo 5.jpg';
-import amt from '../assets/images/AMT.jpg';
-import devcon from '../assets/images/DEVCON.jpg';
-import bcards from '../assets/images/B.CARDS.jpg';
-import banner from '../assets/images/BANNER.jpg';
-import sticker from '../assets/images/STICKER1.jpg';
-import tags from '../assets/images/TAGS.jpg';
-import refl1 from '../assets/images/REFLECTOR1.jpg';
-import refl2 from '../assets/images/REFLECTOR2.jpg';
-import hoodie from '../assets/images/HOODIE.jpg';
+import img1 from '../assets/images/logo-1.jpg';
+import img2 from '../assets/images/logo-2.jpg';
+import img3 from '../assets/images/logo-3.jpg';
+import img4 from '../assets/images/logo-4.jpg';
+import img5 from '../assets/images/logo-5.jpg';
+import amt from '../assets/images/amt.jpg';
+import devcon from '../assets/images/devcon.jpg';
+import bcards from '../assets/images/b-cards.jpg';
+import banner from '../assets/images/banner.jpg';
+import sticker from '../assets/images/sticker.jpg';
+import tags from '../assets/images/tags.jpg';
+import refl1 from '../assets/images/reflector-1.jpg';
+import refl2 from '../assets/images/reflector-2.jpg';
+import hoodie from '../assets/images/hoodie.jpg';
 
 const images = [
   { src: img1, alt: 'Graphic Design Sample 1' },

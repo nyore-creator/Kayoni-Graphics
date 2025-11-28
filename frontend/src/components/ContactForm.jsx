@@ -1,15 +1,20 @@
 // src/components/ContactForm.jsx
 import React, { useState } from 'react';
+import { FaUser, FaEnvelope, FaCommentDots } from 'react-icons/fa';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+// Use Render backend URL as default, fallback to localhost for dev
+const API_BASE =
+  import.meta.env.VITE_API_BASE || 'https://kayoni-graphics.onrender.com/api';
 
 export default function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState({ type: '', msg: '' });
   const [loading, setLoading] = useState(false);
 
-  const update = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const update = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const validateEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -19,75 +24,77 @@ export default function ContactForm() {
       setStatus({ type: 'error', msg: 'Please fill all fields.' });
       return;
     }
+    if (!validateEmail(form.email)) {
+      setStatus({ type: 'error', msg: 'Please enter a valid email.' });
+      return;
+    }
 
     try {
       setLoading(true);
-
       const res = await fetch(`${API_BASE}/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-
       const data = await res.json();
 
       if (!res.ok) {
-        setStatus({
-          type: 'error',
-          msg: data.msg || 'Failed to send message.',
-        });
+        setStatus({ type: 'error', msg: data.msg || 'Failed to send message.' });
       } else {
-        setStatus({
-          type: 'success',
-          msg: 'Message sent successfully!',
-        });
+        setStatus({ type: 'success', msg: 'Message sent successfully!' });
         setForm({ name: '', email: '', message: '' });
       }
-    } catch (err) {
-      setStatus({
-        type: 'error',
-        msg: 'Network error. Please try again.',
-      });
+    } catch {
+      setStatus({ type: 'error', msg: 'Network error. Please try again.' });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section id="contact" className="section">
+    <section id="contact" className="section contact-section">
       <h2>Contact Us</h2>
-      <form className="form" onSubmit={submit}>
-        <label htmlFor="name">Your Name</label>
-        <input
-          id="name"
-          name="name"
-          value={form.name}
-          onChange={update}
-          required
-        />
+      <form className="contact-form" onSubmit={submit}>
+        <div className="input-group">
+          <FaUser className="icon" />
+          <input
+            id="name"
+            name="name"
+            placeholder="Your Name"
+            value={form.name}
+            onChange={update}
+            required
+          />
+        </div>
 
-        <label htmlFor="email">Your Email</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          value={form.email}
-          onChange={update}
-          required
-        />
+        <div className="input-group">
+          <FaEnvelope className="icon" />
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Your Email"
+            value={form.email}
+            onChange={update}
+            required
+          />
+        </div>
 
-        <label htmlFor="message">Your Message</label>
-        <textarea
-          id="message"
-          name="message"
-          rows="6"
-          value={form.message}
-          onChange={update}
-          required
-        />
+        <div className="input-group textarea-group">
+          <FaCommentDots className="icon" />
+          <textarea
+            id="message"
+            name="message"
+            rows="6"
+            placeholder="Your Message"
+            value={form.message}
+            onChange={update}
+            required
+          />
+        </div>
 
         <button className="btn btn-primary" type="submit" disabled={loading}>
-          {loading ? 'Sending…' : 'Send'}
+          {loading ? <span className="spinner"></span> : 'Send Message'}
         </button>
 
         {status.msg && (

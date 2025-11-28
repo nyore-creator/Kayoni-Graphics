@@ -1,7 +1,7 @@
 // src/components/VideoGrid.jsx
 import React from 'react';
-import v1 from '../assets/videos/KAYONI.mp4';
-import v2 from '../assets/videos/EMBROIDERY.mp4';
+import v1 from '../assets/videos/kayoni.mp4';
+import v2 from '../assets/videos/embroidery.mp4';
 import v3 from '../assets/videos/jerseys.mp4';
 
 export default function VideoGrid() {
