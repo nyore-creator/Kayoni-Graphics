@@ -2,11 +2,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 // Import your images from /src/assets
-import img1 from '../assets/images/logo-1.jpg';
-import img2 from '../assets/images/logo-2.jpg';
-import img3 from '../assets/images/logo-3.jpg';
-import img4 from '../assets/images/logo-4.jpg';
-import img5 from '../assets/images/logo-5.jpg';
+import img1 from '../assets/images/yawa.jpg';
+import img2 from '../assets/images/ango.jpg';
+import img3 from '../assets/images/kiawa.jpg';
+import img4 from '../assets/images/otis.jpg';
+import img5 from '../assets/images/chesa.jpg';
 import amt from '../assets/images/amt.jpg';
 import devcon from '../assets/images/devcon.jpg';
 import bcards from '../assets/images/b-cards.jpg';
