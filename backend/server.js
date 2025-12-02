@@ -9,14 +9,18 @@ const Message = require("./models/Message");
 const app = express();
 app.use(express.json());
 
+// =======================
+// CORS Setup
+// =======================
 const allowedOrigins = [
-  "https://kayonigraphics.org",
-  "http://localhost:5173",
+  process.env.FRONTEND_URL || "http://localhost:5173",
+  "https://kayonigraphics.org"
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
+      // Allow same-server or Postman requests with no origin
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
       console.log("❌ Blocked by CORS:", origin);
@@ -29,50 +33,60 @@ app.use(
 );
 app.options("*", cors());
 
-// Mongo
+// =======================
+// MongoDB Connection
+// =======================
 const MONGO_URI = process.env.MONGO_URI;
 if (!MONGO_URI) {
   console.error("❌ Missing MONGO_URI in .env");
   process.exit(1);
 }
+
 mongoose
-  .connect(MONGO_URI)
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => {
     console.error("❌ MongoDB connection error:", err.message);
     process.exit(1);
   });
 
-// Nodemailer transporter (using env vars)
+// =======================
+// Nodemailer Setup
+// =======================
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST, // e.g. smtp.sendgrid.net or smtp.gmail.com
+  host: process.env.SMTP_HOST,
   port: parseInt(process.env.SMTP_PORT || "587", 10),
-  secure: process.env.SMTP_SECURE === "true", // true for 465
+  secure: process.env.SMTP_SECURE === "true",
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
 });
 
-// Verify transporter (logs but does not crash)
-transporter.verify().then(
-  () => console.log("✅ SMTP transporter ready"),
-  (err) => console.warn("⚠️ SMTP verify problem:", err && err.message)
-);
+// Verify SMTP transporter
+transporter.verify()
+  .then(() => console.log("✅ SMTP transporter ready"))
+  .catch((err) => console.warn("⚠️ SMTP verify problem:", err && err.message));
 
-// Contact endpoint
+// =======================
+// Contact Endpoint
+// =======================
 app.post("/api/contact", async (req, res) => {
   try {
     const { name, email, phone, message } = req.body;
+
     if (!name || !email || !phone || !message) {
       return res.status(400).json({ msg: "All fields are required." });
     }
 
-    // Save message to DB
+    // Save message to MongoDB
     const msg = new Message({ name, email, phone, message });
     await msg.save();
 
-    // Send email to admin
+    // Send email notification
     const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER;
     const mailOptions = {
       from: process.env.FROM_EMAIL || `"Kayoni Graphics" <${process.env.SMTP_USER}>`,
@@ -88,7 +102,6 @@ app.post("/api/contact", async (req, res) => {
       `,
     };
 
-    // Send (don't block on failure)
     transporter.sendMail(mailOptions).catch((err) => {
       console.warn("⚠️ Failed to send email:", err && err.message);
     });
@@ -100,7 +113,13 @@ app.post("/api/contact", async (req, res) => {
   }
 });
 
+// =======================
+// Health Check
+// =======================
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
+// =======================
+// Start Server
+// =======================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
