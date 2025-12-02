@@ -1,26 +1,19 @@
-// src/components/Footer.jsx
 import React from 'react';
+import SocialLinks from './SocialLinks';
 
 export default function Footer() {
-  const scrollTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   return (
     <footer className="footer">
       <p>&copy; 2025 Kayoni Graphics and Branding | All Rights Reserved</p>
 
-      <div className="social-links">
-        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon facebook">
-          F
-        </a>
-        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon instagram">
-          I
-        </a>
-        <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="social-icon tiktok">
-          T
-        </a>
+      <div className="contact-info">
+        <p>Call us: <a href="tel:+254741033753">+254 741 033 753</a></p>
+        <p>Email: <a href="mailto:kayonigraphics@gmail.com">kayonigraphics@gmail.com</a></p>
       </div>
+
+      <SocialLinks />
 
       <button className="scroll-top" onClick={scrollTop}>
         ↑ Back to Top
